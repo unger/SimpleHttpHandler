@@ -1,3 +1,3 @@
 SimpleHttpHandler
 =================
-Simplified json enabled IHttpHandler, with MVC style parameterbinding and serialization
+Simplified json enabled IHttpHandler, with MVC style parameter binding and serialization
