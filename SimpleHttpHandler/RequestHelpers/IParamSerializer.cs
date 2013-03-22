@@ -1,6 +1,5 @@
-﻿namespace SimpleHttpHandler
+﻿namespace SimpleHttpHandler.RequestHelpers
 {
-	using System.Collections.Generic;
 	using System.Collections.Specialized;
 
 	using Newtonsoft.Json.Linq;

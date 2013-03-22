@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleHttpHandler.ParameterSerializer
+﻿namespace SimpleHttpHandler.RequestHelpers
 {
 	using System.Web;
 
-	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
 
 	public class RequestParser
@@ -20,7 +13,7 @@ namespace SimpleHttpHandler.ParameterSerializer
 			this.serializer = serializer;
 		}
 
-		public JObject GetPostData(HttpRequestBase request)
+		public JObject GetData(HttpRequestBase request)
 		{
 			return this.serializer.Deserialize(request.Form) as JObject;
 		}

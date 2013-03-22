@@ -7,7 +7,7 @@
 	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
 
-	using SimpleHttpHandler.ParameterSerializer;
+	using SimpleHttpHandler.RequestHelpers;
 
 	[TestFixture]
 	public class ParamSerializerTest

@@ -46,11 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ParameterSerializer\IParamSerializer.cs" />
+    <Compile Include="SimpleHttpHandlerBase.cs" />
+    <Compile Include="RequestHelpers\IParamSerializer.cs" />
     <Compile Include="ISimpleHttpHandler.cs" />
     <Compile Include="MethodBinding\MethodBinder.cs" />
-    <Compile Include="ParameterSerializer\ParamSerializer.cs" />
-    <Compile Include="ParameterSerializer\RequestParser.cs" />
+    <Compile Include="RequestHelpers\ParamSerializer.cs" />
+    <Compile Include="RequestHelpers\RequestParser.cs" />
     <Compile Include="SimpleHttpHandler.cs" />
     <Compile Include="MethodBinding\MethodParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

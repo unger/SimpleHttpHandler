@@ -10,5 +10,7 @@
 		public string Apa { get; set; }
 
 		public string Bepa { get; set; }
+
+		public string Cepa { get; set; }
 	}
 }

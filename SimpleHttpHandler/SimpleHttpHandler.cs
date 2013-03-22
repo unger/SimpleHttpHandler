@@ -12,58 +12,30 @@ namespace SimpleHttpHandler
 	using System.Web.Routing;
 	using System.Web.Script.Serialization;
 
-	public class SimpleHttpHandler<T> : IHttpHandler where T : class, ISimpleHttpHandler
+	using Newtonsoft.Json;
+	using Newtonsoft.Json.Linq;
+
+	using SimpleHttpHandler.RequestHelpers;
+
+	public class SimpleHttpHandler<T> : SimpleHttpHandlerBase<T> where T : class, ISimpleHttpHandler
 	{
-		public bool IsReusable
+		protected override void ProcessResponse(HttpContextBase context, JObject requestData)
 		{
-			get { return true; }
-		}
+			var methodBinder = new MethodBinder<T>();
 
-		public void ProcessRequest(HttpContext context)
-		{
-			var httpContext = new HttpContextWrapper(context);
+			var method = methodBinder.GetMethod(this.MethodName, requestData);
 
-			var methodname = this.GetMethodName(httpContext);
-				
-			if (string.IsNullOrEmpty(methodname))
+			if (method == null)
 			{
-				this.WriteResponse(httpContext, new { error = "No method supplied" }); 
-				return;
-			}
-
-			methodname = methodname.Trim(new[] { '/' });
-			var methods = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-			MethodInfo methodInfo = null;
-			object[] methodparameters = null;
-			foreach (var method in methods)
-			{
-				if (method.Name == methodname)
-				{
-					var pars = method.GetParameters()
-										.Select(p => new MethodParameter { Name = p.Name, ParameterType = p.ParameterType })
-										.ToArray();
-
-					if (this.BindParameters(httpContext, pars))
-					{
-						methodInfo = method;
-						methodparameters = pars.Select(p => p.Value).ToArray();
-						break;
-					}
-				}
-			}
-
-			if (methodInfo == null)
-			{
-				this.WriteResponse(httpContext, new { error = "Method missing" });
+				this.WriteResponse(context, new { error = "Method missing" });
 				return;
 			}
 
 			var handlerInstance = this.ResolveHandlerInstance();
 
-			var result = methodInfo.Invoke(handlerInstance, methodparameters);
+			var result = method.Invoke(handlerInstance);
 
-			this.WriteResponse(httpContext, result);
+			this.WriteResponse(context, result);
 		}
 
 		protected virtual bool BindParameters(HttpContextBase context, IEnumerable<MethodParameter> parameters)
@@ -105,7 +77,7 @@ namespace SimpleHttpHandler
 
 				if (value is Dictionary<string, object>)
 				{
-					if (parameter.ParameterType.IsPrimitive || parameter.ParameterType == typeof(string))
+					if (parameter.Type.IsPrimitive || parameter.Type == typeof(string))
 					{
 						return false;
 					}
@@ -113,7 +85,7 @@ namespace SimpleHttpHandler
 					var valueDict = value as Dictionary<string, object>;
 					try
 					{
-						var obj = Activator.CreateInstance(parameter.ParameterType);
+						var obj = Activator.CreateInstance(parameter.Type);
 						foreach (var prop in obj.GetType().GetProperties())
 						{
 							if (valueDict.ContainsKey(prop.Name.ToLower()))
@@ -137,7 +109,7 @@ namespace SimpleHttpHandler
 				{
 					try
 					{
-						parameter.Value = Convert.ChangeType(value, parameter.ParameterType, CultureInfo.InvariantCulture);
+						parameter.Value = Convert.ChangeType(value, parameter.Type, CultureInfo.InvariantCulture);
 					}
 					catch (Exception)
 					{
@@ -159,25 +131,10 @@ namespace SimpleHttpHandler
 			return (this is T) ? this as T : Activator.CreateInstance<T>();
 		}
 
-		protected virtual void WriteResponse(HttpContextBase context, object output)
+		protected override void WriteResponse(HttpContextBase context, object output)
 		{
 			context.Response.ContentType = "text/javascript";
-			context.Response.Write(new JavaScriptSerializer().Serialize(output));
-		}
-
-		protected virtual string GetMethodName(HttpContextBase httpContext)
-		{
-			var methodName = httpContext.Request.PathInfo.Trim(new[] { '/' });
-			if (string.IsNullOrEmpty(methodName))
-			{
-				var routeData = httpContext.Items["RouteData"] as RouteData;
-				if (routeData != null)
-				{
-					methodName = routeData.Values["method"].ToString();
-				}
-			}
-
-			return methodName;
+			context.Response.Write(JsonConvert.SerializeObject(output));
 		}
 	}
 }

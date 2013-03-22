@@ -1,7 +1,9 @@
 ﻿(function ($) {
 
 	$("#param").on("click", function () {
-		var obj = JSON.parse($("#paraminput").val());
+		var obj = eval("(function() { return " + $("#paraminput").val() + "; })();");
+
+		//var obj = JSON.parse($("#paraminput").val());
 		$("#paramoutput").val(decodeURIComponent($.param(obj)));
 	});
 
@@ -14,19 +16,29 @@
 
 })(jQuery);
 
-/*
+
 (function ($) {
 
-	$.ajax({
-		dataType: "json",
-		url: '/Handler.ashx/ReturnJson',
-		data: { apa: 10, bepa: 12.45, cepa: "string", depa: true, epa: false, fepa: null, gepa: [1, 2, 3] },
-		success: function (data, textStatus, jqXHR) {
-			console.log(data);
-		}
+	var dummyData = { apa: 10, bepa: 12.45, cepa: "string", depa: true, epa: false, fepa: null, gepa: [1, 2, 3] };
+
+	$('#send').on("click", function() {
+		var obj = eval("(function() { return " + $("#paraminput").val() + "; })();");
+
+		$.ajax({
+			dataType: "json",
+			url: '/Handlers/Handler.ashx/ReturnJson',
+			data: obj,
+			success: function (data, textStatus, jqXHR) {
+				console.log(data);
+
+				$("#paramoutput").val(JSON.stringify(data));
+			}
+		});
+		
 	});
 
-	$.ajax({
+
+	/*$.ajax({
 		dataType: "json",
 		type: "POST",
 		url: '/Handler.ashx/ReturnJson',
@@ -34,7 +46,6 @@
 		success: function (data, textStatus, jqXHR) {
 			console.log(data);
 		}
-	});
+	});*/
 
 })(jQuery);
-*/

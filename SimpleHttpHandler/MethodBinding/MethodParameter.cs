@@ -6,7 +6,7 @@
 	{
 		public string Name { get; set; }
 
-		public Type ParameterType { get; set; }
+		public Type Type { get; set; }
 
 		public object Value { get; set; }
 	}

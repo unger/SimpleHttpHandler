@@ -7,11 +7,13 @@
 	/// </summary>
 	public class Handler : SimpleHttpHandler<Handler>, ISimpleHttpHandler
 	{
-		public object ReturnJson(string test)
+		public object ReturnJson(int apa, double bepa, string cepa)
 		{
 			return new 
 				{
-					test = test
+					apa,
+					bepa,
+					cepa
 				};
 		}
 
