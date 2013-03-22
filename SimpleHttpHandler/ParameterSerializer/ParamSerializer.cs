@@ -1,4 +1,4 @@
-﻿namespace SimpleHttpHandler
+﻿namespace SimpleHttpHandler.ParameterSerializer
 {
 	using System;
 	using System.Collections.Generic;
@@ -12,13 +12,8 @@
 	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
 
-	/// <summary>
-	/// Port of jquery-deparam
-	/// https://github.com/chrissrogers/jquery-deparam/blob/master/jquery-deparam.js
-	/// </summary>
-	public class ParamSerializer
+	public class ParamSerializer : IParamSerializer
 	{
-
 		/// <summary>
 		/// Serialize an array of form elements or a set of key/values into a query string
 		/// </summary>
@@ -26,42 +21,17 @@
 		/// <returns></returns>
 		public string Serialize(object obj)
 		{
-			var jsonstring = JsonConvert.SerializeObject(obj);
-			var dict = this.DeserializeToDictionary(jsonstring);
+			if (!(obj is JObject))
+			{
+				var jsonstring = JsonConvert.SerializeObject(obj);
+				obj = JsonConvert.DeserializeObject<JObject>(jsonstring);
+			}
 
-			var paramString = this.Parametrize(dict, string.Empty);
-
+			var paramString = this.Parametrize(obj);
 			return paramString.TrimEnd(new[] { '&' });
 		}
 
-		private string Parametrize(object obj, string value)
-		{
-			var returnVal = string.Empty;
-
-			if (obj is Dictionary<string, object>)
-			{
-				var dict = obj as Dictionary<string, object>;
-				foreach (var key in dict.Keys)
-				{
-					returnVal += this.Parametrize(dict[key], value == string.Empty ? key : string.Format("{0}[{1}]", value, key));
-				}
-			}
-			else if (obj is JArray)
-			{
-				foreach (var item in obj as JArray)
-				{
-					returnVal += this.Parametrize(item, string.Format("{0}[]", value));
-				}
-			}
-			else
-			{
-				return string.Format("{0}={1}&", value, obj);
-			}
-
-			return returnVal;
-		}
-
-		public Dictionary<string, object> Deserialize(NameValueCollection input)
+		public JObject Deserialize(NameValueCollection input)
 		{
 			var output = new StringBuilder();
 			foreach (var key in input.AllKeys)
@@ -72,9 +42,18 @@
 			return this.Deserialize(output.ToString().TrimEnd(new[] { '&' }));
 		}
 
-		public Dictionary<string, object> Deserialize(string input)
+		public JObject Deserialize(string input)
 		{
-			var obj = new Dictionary<string, object>();
+			return this.DeParametrize(input);
+		}
+
+		/// <summary>
+		/// Translation of jquery-deparam
+		/// https://github.com/chrissrogers/jquery-deparam/blob/master/jquery-deparam.js
+		/// </summary>
+		private JObject DeParametrize(string input) 
+		{
+			var obj = new JObject();
 
 			var items = input.Replace("+", " ").Split(new[] { '&' });
 
@@ -139,59 +118,61 @@
 									key = index == -1 ? "0" : index.ToString(CultureInfo.InvariantCulture);
 								}
 
-								if (cur is IList<object>)
+								if (cur is JArray)
 								{
+									var jarr = cur as JArray;
 									if (i == keysLast)
 									{
-										if (index >= 0 && index < (cur as IList<object>).Count)
+										if (index >= 0 && index < jarr.Count)
 										{
-											(cur as IList<object>)[index] = val;
+											jarr[index] = val;
 										}
 										else
 										{
-											(cur as IList<object>).Add(val);
+											jarr.Add(val);
 										}
 									}
 									else
 									{
-										if (index < 0 || index >= (cur as IList<object>).Count)
+										if (index < 0 || index >= jarr.Count)
 										{
 											if (keys[i + 1] == string.Empty || int.TryParse(keys[i + 1], out nextindex))
 											{
-												(cur as IList<object>).Add(new List<object>());
+												jarr.Add(new JArray());
 											}
 											else
 											{
-												(cur as IList<object>).Add(new Dictionary<string, object>());
+												jarr.Add(new JObject());
 											}
 
-											index = 0;
+											index = jarr.Count - 1;
 										}
 
-										cur = (cur as IList<object>).ElementAt(index);
+										cur = jarr.ElementAt(index);
 									}
 								}
-								else if (cur is Dictionary<string, object>)
+								else if (cur is JObject)
 								{
+									var jobj = cur as JObject;
 									if (i == keysLast)
 									{
-										(cur as Dictionary<string, object>)[key] = val;
+										jobj[key] = val;
 									}
 									else
 									{
-										if (!(cur as Dictionary<string, object>).ContainsKey(key))
+										if (jobj[key] == null)
 										{
 											if (keys[i + 1] == string.Empty || int.TryParse(keys[i + 1], out nextindex))
 											{
-												(cur as Dictionary<string, object>).Add(key, new List<object>());
+												jobj.Add(key, new JArray());
 											}
 											else
 											{
-												(cur as Dictionary<string, object>).Add(key, new Dictionary<string, object>());
+												jobj.Add(key, new JObject());
 											}
 										}
 
-										cur = (cur as Dictionary<string, object>)[key];
+										cur = jobj[key];
 									}
 								}
 							}
@@ -200,16 +181,16 @@
 						{
 							// Simple key, even simpler rules, since only scalars and shallow
 							// arrays are allowed.
-							if (obj.ContainsKey(key) && obj[key] is IList<object>)
+							if (obj[key] is JArray)
 							{
 								// val is already an array, so push on the next value.
-								(obj[key] as IList<object>).Add(val);
+								(obj[key] as JArray).Add(val);
 							}
-							else if (obj.ContainsKey(key) && val != null)
+							else if (obj[key] != null && val != null)
 							{
 								// val isn't an array, but since a second value has been specified,
 								// convert val into an array.
-								obj[key] = new List<object> { obj[key], val };
+								obj[key] = new JArray { obj[key], val };
 							}
 							else
 							{
@@ -229,23 +210,40 @@
 			return obj;
 		}
 
-		private Dictionary<string, object> DeserializeToDictionary(string jsonstring)
+		private string Parametrize(object obj, string value = "")
 		{
-			var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonstring);
-			var values2 = new Dictionary<string, object>();
-			foreach (KeyValuePair<string, object> d in values)
+			var returnVal = string.Empty;
+
+			if (obj is JObject)
 			{
-				if (d.Value.GetType().FullName.Contains("Newtonsoft.Json.Linq.JObject"))
+				var jobj = obj as JObject;
+				foreach (var key in jobj.Properties())
 				{
-					values2.Add(d.Key, this.DeserializeToDictionary(d.Value.ToString()));
-				}
-				else
-				{
-					values2.Add(d.Key, d.Value);
+					returnVal += this.Parametrize(jobj[key.Name], value == string.Empty ? key.Name : string.Format("{0}[{1}]", value, key.Name));
 				}
 			}
+			else if (obj is JArray)
+			{
+				var arr = obj as JArray;
+				for (int i = 0; i < arr.Count; i++)
+				{
+					var item = arr[i];
+					if (item is JArray || item is JObject)
+					{
+						returnVal += this.Parametrize(item, string.Format("{0}[{1}]", value, i));
+					}
+					else
+					{
+						returnVal += this.Parametrize(item, string.Format("{0}[]", value));
+					}
+				}
+			}
+			else
+			{
+				return string.Format("{0}={1}&", value, obj);
+			}
 
-			return values2;
+			return returnVal;
 		}
 	}
 }

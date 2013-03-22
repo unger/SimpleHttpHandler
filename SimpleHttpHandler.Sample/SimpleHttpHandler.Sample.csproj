@@ -57,8 +57,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\main.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="js\libs\jquery-deparam.js" />
+    <Content Include="js\main.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
