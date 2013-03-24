@@ -15,7 +15,10 @@
 			<textarea id="paraminput">{ apa: 10, bepa: 12.45, cepa: "string", depa: true, epa: false, fepa: null, gepa: [1, 2, 3] }</textarea>
 			<textarea id="paramoutput"></textarea>
 		</div>
-		<input id="param" type="button" value="param" /><input id="send" type="button" value="send" />
+		<input id="param" type="button" value="param" />
+		
+		<input id="sendparam" type="button" value="sendparam" />
+		<input id="sendjson" type="button" value="sendjson" />
 		
 		<hr/>
 

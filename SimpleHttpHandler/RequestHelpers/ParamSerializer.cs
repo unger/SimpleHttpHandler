@@ -20,13 +20,7 @@
 		/// <returns></returns>
 		public string Serialize(object obj)
 		{
-			if (!(obj is JObject))
-			{
-				var jsonstring = JsonConvert.SerializeObject(obj);
-				obj = JsonConvert.DeserializeObject<JObject>(jsonstring);
-			}
-
-			var paramString = this.Parametrize(obj);
+			var paramString = this.Parametrize(JObject.FromObject(obj));
 			return paramString.TrimEnd(new[] { '&' });
 		}
 
@@ -43,14 +37,14 @@
 
 		public JObject Deserialize(string input)
 		{
-			return this.DeParametrize(input);
+			return this.Deparametrize(input);
 		}
 
 		/// <summary>
 		/// Translation of jquery-deparam
 		/// https://github.com/chrissrogers/jquery-deparam/blob/master/jquery-deparam.js
 		/// </summary>
-		private JObject DeParametrize(string input) 
+		private JObject Deparametrize(string input) 
 		{
 			var obj = new JObject();
 

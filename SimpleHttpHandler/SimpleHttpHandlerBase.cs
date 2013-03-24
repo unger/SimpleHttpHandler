@@ -56,9 +56,9 @@ namespace SimpleHttpHandler
 
 			if (this.IsValidRequest(this.HttpContext))
 			{
-				var paramSerializer = new ParamSerializer();
-				var data = paramSerializer.Deserialize(context.Request.Params);
-
+				var paramserializer = new ParamSerializer();
+				var requestParser = new RequestParser(paramserializer);
+				var data = requestParser.GetData(new RawHttpRequest(this.HttpContext.Request));
 
 				this.ProcessResponse(this.HttpContext, data);
 			}

@@ -9,6 +9,11 @@ namespace SimpleHttpHandler.Sample
 {
 	public partial class Default : System.Web.UI.Page
 	{
+		public Default()
+		{
+			var test = "sss";
+		}
+
 		protected void Page_Load(object sender, EventArgs e)
 		{
 

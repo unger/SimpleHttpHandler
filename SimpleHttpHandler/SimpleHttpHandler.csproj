@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MethodBinding\MethodInfoWrapper.cs" />
+    <Compile Include="RequestHelpers\IRawHttpRequest.cs" />
+    <Compile Include="RequestHelpers\RawHttpRequest.cs" />
     <Compile Include="SimpleHttpHandlerBase.cs" />
     <Compile Include="RequestHelpers\IParamSerializer.cs" />
     <Compile Include="ISimpleHttpHandler.cs" />

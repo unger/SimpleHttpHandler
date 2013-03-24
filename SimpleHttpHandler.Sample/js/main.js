@@ -21,12 +21,13 @@
 
 	var dummyData = { apa: 10, bepa: 12.45, cepa: "string", depa: true, epa: false, fepa: null, gepa: [1, 2, 3] };
 
-	$('#send').on("click", function() {
+	$('#sendparam').on("click", function() {
 		var obj = eval("(function() { return " + $("#paraminput").val() + "; })();");
 
 		$.ajax({
 			dataType: "json",
 			url: '/Handlers/Handler.ashx/ReturnJson',
+			method: 'POST',
 			data: obj,
 			success: function (data, textStatus, jqXHR) {
 				console.log(data);
@@ -36,6 +37,25 @@
 		});
 		
 	});
+
+	$('#sendjson').on("click", function () {
+		var obj = eval("(function() { return " + $("#paraminput").val() + "; })();");
+
+		$.ajax({
+			dataType: "json",
+			url: '/Handlers/Handler.ashx/ReturnJson',
+			method: 'POST',
+			data: JSON.stringify(obj),
+			success: function (data, textStatus, jqXHR) {
+				console.log(data);
+
+				$("#paramoutput").val(JSON.stringify(data));
+			}
+		});
+
+	});
+
+
 
 
 	/*$.ajax({
