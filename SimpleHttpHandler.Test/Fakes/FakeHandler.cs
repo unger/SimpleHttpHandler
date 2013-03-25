@@ -29,6 +29,15 @@ namespace SimpleHttpHandler.Test.Fakes
 			return param1;
 		}
 
+		public dynamic SingleArrayOfStringParam(string[] param1)
+		{
+			return param1;
+		}
+
+		public dynamic SingleArrayOfObjectParam(FakeObject[] param1)
+		{
+			return param1;
+		}
 
 	}
 }

@@ -51,6 +51,23 @@
 				{
 					this.Parameters[0].Value = datasource.ToObject(this.Parameters[0].Type);
 				}
+				else if (this.ArrayType(this.Parameters[0].Type))
+				{
+					foreach (var prop in datasource.Properties())
+					{
+						if (datasource[prop.Name] is JArray)
+						{
+							try
+							{
+								this.Parameters[0].Value = datasource[prop.Name].ToObject(this.Parameters[0].Type);
+								break;
+							}
+							catch (Exception)
+							{
+							}
+						}
+					}
+				}
 			}
 			else
 			{

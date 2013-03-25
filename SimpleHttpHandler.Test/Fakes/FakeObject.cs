@@ -34,6 +34,10 @@
 
 		private bool ArrayEquals(object[] list1, object[] list2)
 		{
+			if (list1 == null && list2 == null)
+			{
+				return true;
+			}
 			var equals = object.Equals(list1.Length, list2.Length);
 			for(int i = 0; i < list1.Length; i++)
 			{

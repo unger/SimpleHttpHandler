@@ -77,7 +77,52 @@ namespace SimpleHttpHandler.Test
 			Assert.AreEqual(input, output);
 		}
 
-		
+		[Test]
+		public void SingleArrayOfStringParam()
+		{
+			// Arrange
+			var handler = new FakeHandler();
+			var method = handler.GetType().GetMethod("SingleArrayOfStringParam");
+			var miw = new MethodInfoWrapper<FakeHandler>(method);
+			var input = new 
+			{
+				queryData = new[] { "val1", "val2", "val3" }
+			};
+
+			// Act
+			miw.BindValues(JObject.FromObject(input));
+			dynamic output = miw.Invoke(handler);
+
+			// Assert
+			Assert.AreEqual(1, miw.MatchedParameters());
+			Assert.AreEqual(input.queryData, output);
+		}		
+
+	
+		[Test]
+		public void SingleArrayOfObjectParam()
+		{
+			// Arrange
+			var handler = new FakeHandler();
+			var method = handler.GetType().GetMethod("SingleArrayOfObjectParam");
+			var miw = new MethodInfoWrapper<FakeHandler>(method);
+			var input = new
+			{
+				queryData = new[] {
+									new FakeObject { Prop1 = "val1", Prop2 = 10, Prop3 = 10.5 },
+									new FakeObject { Prop1 = "val2", Prop2 = 20, Prop3 = 20.5 },
+									new FakeObject { Prop1 = "val3", Prop2 = 30, Prop3 = 30.5 }
+							}
+			};
+
+			// Act
+			miw.BindValues(JObject.FromObject(input));
+			dynamic output = miw.Invoke(handler);
+
+			// Assert
+			Assert.AreEqual(1, miw.MatchedParameters());
+			Assert.AreEqual(input.queryData, output);
+		}		
 
 		[Test]
 		public void MultiTypeParam()

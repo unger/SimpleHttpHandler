@@ -24,7 +24,7 @@
 			return paramString.TrimEnd(new[] { '&' });
 		}
 
-		public JObject Deserialize(NameValueCollection input)
+		public object Deserialize(NameValueCollection input)
 		{
 			var output = new StringBuilder();
 			foreach (var key in input.AllKeys)
@@ -35,9 +35,14 @@
 			return this.Deserialize(output.ToString().TrimEnd(new[] { '&' }));
 		}
 
-		public JObject Deserialize(string input)
+		public object Deserialize(string input)
 		{
-			return this.Deparametrize(input);
+			return this.Deparametrize(input).ToObject<object>();
+		}
+
+		public T Deserialize<T>(string input)
+		{
+			return this.Deparametrize(input).ToObject<T>();
 		}
 
 		/// <summary>

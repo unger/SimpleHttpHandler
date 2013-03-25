@@ -19,8 +19,8 @@
 
 		public JObject GetData(IRawHttpRequest request)
 		{
-			var formData = this.Convert(request.FormData);
-			var queryData = this.Convert(request.QueryData);
+			var formData = this.Convert(request.FormData, "formData");
+			var queryData = this.Convert(request.QueryData, "queryData");
 
 			// Merge querydata with formdata
 			// Overwrite all query keys with form keys
@@ -32,21 +32,29 @@
 			return queryData;
 		}
 
-		private JObject Convert(string data)
+		private JObject Convert(string data, string emptyKeyName)
 		{
 			JObject result = null;
 			if (this.IsJson(data))
 			{
 				try
 				{
-					result = JsonConvert.DeserializeObject<JObject>(data);
+					var tempresult = JsonConvert.DeserializeObject<JContainer>(data);
+					if (tempresult is JObject)
+					{
+						result = tempresult as JObject;
+					}
+					else if (tempresult is JArray)
+					{
+						result = new JObject { { emptyKeyName, tempresult as JArray } };
+					}
 				}
 				catch (Exception)
 				{
 				}
 			}
 
-			return result ?? this.serializer.Deserialize(data);
+			return result ?? this.serializer.Deserialize<JObject>(data);
 		}
 
 		private bool IsJson(string input)

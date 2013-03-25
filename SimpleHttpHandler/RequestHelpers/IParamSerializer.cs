@@ -8,8 +8,8 @@
 	{
 		string Serialize(object obj);
 
-		JObject Deserialize(NameValueCollection input);
+		object Deserialize(string input);
 
-		JObject Deserialize(string input);
+		T Deserialize<T>(string input);
 	}
 }

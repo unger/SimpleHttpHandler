@@ -16,7 +16,7 @@
 		[Test]
 		public void Deserialize_SingleDimension()
 		{
-			var obj = new ParamSerializer().Deserialize("a=1&b=2");
+			var obj = new ParamSerializer().Deserialize<JObject>("a=1&b=2");
 
 			Assert.AreEqual(obj["a"], new JValue("1"));
 			Assert.AreEqual(obj["b"], new JValue("2"));
@@ -25,7 +25,7 @@
 		[Test]
 		public void Deserialize_Array()
 		{
-			var obj = new ParamSerializer().Deserialize("a[]=1&a[]=2");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[]=1&a[]=2");
 
 			Assert.AreEqual(obj["a"], new JArray { "1", "2" });
 		}
@@ -33,7 +33,7 @@
 		[Test]
 		public void Deserialize_ArrayWithObject()
 		{
-			var obj = new ParamSerializer().Deserialize("a[0][b]=1&a[1][b]=2");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[0][b]=1&a[1][b]=2");
 
 			Assert.AreEqual(obj["a"], new JArray { new JObject { { "b", "1" } }, new JObject { { "b", "2" } } });
 		}
@@ -41,7 +41,7 @@
 		[Test]
 		public void Deserialize_ArrayWithIndexes()
 		{
-			var obj = new ParamSerializer().Deserialize("a[0]=1&a[1]=2");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[0]=1&a[1]=2");
 
 			Assert.AreEqual(obj["a"], new JArray { "1", "2" });
 		}
@@ -49,7 +49,7 @@
 		[Test]
 		public void Deserialize_ArrayWithBadIndexes()
 		{
-			var obj = new ParamSerializer().Deserialize("a[5]=1&a[4]=2");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[5]=1&a[4]=2");
 
 			Assert.AreEqual(obj["a"], new JArray { "1", "2" });
 		}
@@ -57,7 +57,7 @@
 		[Test]
 		public void Deserialize_Object()
 		{
-			var obj = new ParamSerializer().Deserialize("a[b]=bVal&a[c]=cVal");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[b]=bVal&a[c]=cVal");
 
 			Assert.AreEqual(obj["a"], new JObject { { "b", "bVal" }, { "c", "cVal" } });
 		}
@@ -65,7 +65,7 @@
 		[Test]
 		public void Deserialize_NestedObject()
 		{
-			var obj = new ParamSerializer().Deserialize("a[b][c]=cVal&a[b][d]=dVal&a[e]=eVal");
+			var obj = new ParamSerializer().Deserialize<JObject>("a[b][c]=cVal&a[b][d]=dVal&a[e]=eVal");
 
 			Assert.AreEqual(obj["a"], new JObject { { "b", new JObject { { "c", "cVal" }, { "d", "dVal" } } }, { "e", "eVal" } });
 		}
@@ -73,7 +73,7 @@
 		[Test]
 		public void Deserialize_EmptyKey()
 		{
-			var obj = new ParamSerializer().Deserialize("a");
+			var obj = new ParamSerializer().Deserialize<JObject>("a");
 			var proplist = obj.Properties().ToList();
 
 			Assert.AreEqual(1, proplist.Count);
@@ -84,7 +84,7 @@
 		[Test]
 		public void Deserialize_PararmsAndEmptyKey()
 		{
-			var obj = new ParamSerializer().Deserialize("a&b=1");
+			var obj = new ParamSerializer().Deserialize<JObject>("a&b=1");
 
 			Assert.AreEqual(new JObject { { "a", null }, { "b", "1" } }, obj);
 		}
