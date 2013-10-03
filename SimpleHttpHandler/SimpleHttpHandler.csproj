@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="MethodBinding\MethodInfoWrapper.cs" />
     <Compile Include="RequestHelpers\IRawHttpRequest.cs" />
+    <Compile Include="RequestHelpers\ParamKeySplitter.cs" />
     <Compile Include="RequestHelpers\RawHttpRequest.cs" />
     <Compile Include="SimpleHttpHandlerBase.cs" />
     <Compile Include="RequestHelpers\IParamSerializer.cs" />
