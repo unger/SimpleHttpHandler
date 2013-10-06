@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-
-namespace SimpleHttpHandler.Sample
+﻿namespace SimpleHttpHandler.Sample
 {
+    using System;
+
+    using Newtonsoft.Json;
+
     using SimpleHttpHandler.RequestHelpers;
     using SimpleHttpHandler.Sample.Model;
 
@@ -18,7 +15,7 @@ namespace SimpleHttpHandler.Sample
 
             var foo = serializer.Deserialize<Foo>(Request.Form);
 
-
+            this.ResponseOutput.Text = JsonConvert.SerializeObject(foo);
         }
     }
 }

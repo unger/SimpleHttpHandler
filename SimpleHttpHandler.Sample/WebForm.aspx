@@ -7,7 +7,7 @@
     <title></title>
 </head>
 <body>
-    <form action="" method="POST">
+    <form action="" method="post">
         
         <input name="Apa" type="text" />
 
@@ -18,5 +18,9 @@
         <button value="Submit" />
 
     </form>
+    
+    <pre>
+        <asp:Literal ID="ResponseOutput" runat="server"></asp:Literal>
+    </pre>
 </body>
 </html>

@@ -1,6 +1,6 @@
 ﻿namespace SimpleHttpHandler
 {
-	public interface ISimpleHttpHandler
-	{
-	}
+    public interface ISimpleHttpHandler
+    {
+    }
 }
