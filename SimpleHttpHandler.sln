@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5EB88D
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHttpHandler.Test", "SimpleHttpHandler.Test\SimpleHttpHandler.Test.csproj", "{B4E4C9CF-65D5-4ACA-BD5B-1B6B962F690C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHttpHandler.Test", "SimpleHttpHandler.Tests\SimpleHttpHandler.Test.csproj", "{B4E4C9CF-65D5-4ACA-BD5B-1B6B962F690C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
