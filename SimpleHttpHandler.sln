@@ -5,13 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHttpHandler.Sample", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHttpHandler", "SimpleHttpHandler\SimpleHttpHandler.csproj", "{809F7732-61FA-45E5-91FB-F96B39E1A057}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5EB88D11-A77C-457C-8DE2-E670ADA733CC}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleHttpHandler.Tests", "SimpleHttpHandler.Tests\SimpleHttpHandler.Tests.csproj", "{B4E4C9CF-65D5-4ACA-BD5B-1B6B962F690C}"
 EndProject
 Global
